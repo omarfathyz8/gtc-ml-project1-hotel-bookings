@@ -7,7 +7,7 @@ The process is divided into three main phases: **EDA, Data Cleaning, and Feature
 
 ## Phase 1: Exploratory Data Analysis (EDA) & Data Quality Report
 - [x] Loaded the dataset.
-- [x] Generated summary statistics (`.describe()`, `.info()`).
+- [x] Generated summary statistics.
 - [x] Identified missing values.
 - [x] Visualized missing values using a heatmap matrix.
 - [x] Detected outliers in numerical columns using boxplots and the IQR method.
@@ -17,29 +17,40 @@ The process is divided into three main phases: **EDA, Data Cleaning, and Feature
 
 ## Phase 2: Data Cleaning
 - [x] **Handle Missing Values**  
-  - *company & agent*: changed to object type then replaced with `"None"`.  
+  - *company & agent*: replaced with `0`.  
   - *country*: replaced with `"Unknown"`.  
   - *children*: imputed with median.  
-- [x] **Remove Duplicates**: dropped exact duplicate rows.  
-- [ ] **Handle Outliers**: cap extreme values (e.g., `adr > 1000 → 1000`).  
-- [ ] **Fix Data Types**: ensure date columns are correctly formatted.
+- [x] **Remove Duplicates**: dropped exact duplicate rows.
+- [x] **Handle Outliers**
+  - Cap extreme and negative values for `adr`.  
+  - Remove negative and 0 values for `adults`.  
+  - Remove values greater than 5 in `children` and `babies`. 
+- [x] **Fix Data Types**
+  - Change `children` to int64.  
+  - Change `reservation_status_date` to datetime64.
 
 ---
 
 ## Phase 3: Feature Engineering & Preprocessing
-- [ ] Create new features:  
+- [x] Create new features
   - `total_guests = adults + children + babies`  
   - `total_nights = stays_in_weekend_nights + stays_in_week_nights`  
-  - `is_family` = binary flag (Yes/No)  
-- [ ] Encode categorical variables:  
-  - One-hot encoding for low-cardinality (e.g., meal, market_segment).  
-  - Frequency/grouping for high-cardinality (e.g., country).  
-- [ ] Remove data leakage: drop `reservation_status` & `reservation_status_date`.  
-- [ ] Split dataset into **train/test sets** (`test_size=0.2`, `random_state=42`).  
+  - `is_family = binary flag (Yes/No)`
+- [x] Encode categorical variables
+  - For nominal columns use one-hot encoding
+  - For ordinal columns use label encoding
+  - For high-cardinality columns use frequency encoding
+- [x] Remove data leakage
+  - Remove `country` after creating `country_freq`.
+  - Remove `arrival_date_year` because it contains only few years but we want to generalize.
+  - Remove `reservation_status` and `reservation_status_date` because they are directly related to the target `is_canceled`.
+  - Remove `assigned_room_type` because it represent type of room assigned to the guest and the assignment is made after booking.
+- [x] Split dataset into **Features/Target** then **train/test sets** (`test_size=0.2`, `random_state=42`, `stratify=y`).
+- [x] Save cleaned dataset
 
 ---
 
 ## **Status**:
 - Phase 1 --> ✅ Completed
-- Phase 2 --> ⏳ In Progress
-- Phase 3 --> ❌ Not Started
+- Phase 2 --> ✅ Completed
+- Phase 3 --> ✅ Completed
